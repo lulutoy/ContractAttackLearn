@@ -1,7 +1,17 @@
 
 pragma solidity ^0.8.9;
 
-contract EtherStore {
+contract ReEntrancyGuard{
+    bool internal locked;
+
+    modifier noReentrant(){
+        require(!locked, "no re-entrance");
+        locked = true;
+        _;
+        locked = false;
+    }
+}
+contract EtherStore is ReEntrancyGuard{
 
     mapping(address => uint) balances;
 
@@ -10,8 +20,8 @@ contract EtherStore {
         balances[msg.sender] += msg.value;
     }
 
-    // 取款函数
-    function withdraw() public {
+    // 取款函数 添加修饰器来阻止重入攻击
+    function withdraw() public noReentrant() {
         uint val = balances[msg.sender];
         require(val > 0);
 
