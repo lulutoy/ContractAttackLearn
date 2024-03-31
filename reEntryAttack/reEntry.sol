@@ -1,17 +1,8 @@
 
 pragma solidity ^0.8.9;
 
-contract ReEntrancyGuard{
-    bool internal locked;
 
-    modifier noReentrant(){
-        require(!locked, "no re-entrance");
-        locked = true;
-        _;
-        locked = false;
-    }
-}
-contract EtherStore is ReEntrancyGuard{
+contract EtherStore {
 
     mapping(address => uint) balances;
 
@@ -21,15 +12,15 @@ contract EtherStore is ReEntrancyGuard{
     }
 
     // 取款函数 添加修饰器来阻止重入攻击
-    function withdraw() public noReentrant() {
+    function withdraw() public {
         uint val = balances[msg.sender];
         require(val > 0);
 
-        balances[msg.sender] = 0; // 在调用call函数前，先将状态更新调用call函数的状态,防止攻击者多次调用call函数
         // 从EtherStore合约中转给msg.sender发送val个以太
         (bool sent, ) = msg.sender.call{value: val}(""); // 攻击者可能通过多次执行这个函数，来发起重入攻击
         require(sent, "failed to send ether");
 
+        balances[msg.sender] = 0; 
     }
 
     // 获取EtherStore这个合约的余额
