@@ -6,7 +6,7 @@ contract batch {
     uint public value;
 
     function mintBatch(uint _num) public payable {
-        // 使用delegatecall方法来调用_num次mint函数
+        // 使用一个以太币就能够利用delegatecall方法来调用_num次mint函数
         for(uint i = 0; i < _num; i++) {
             (bool success, ) = address(this).delegatecall(
                 abi.encodeWithSignature("mint(uint256)", _num)
