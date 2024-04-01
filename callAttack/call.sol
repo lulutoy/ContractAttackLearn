@@ -24,6 +24,7 @@ contract Test {
     }
 
     function testExist(uint _num) public payable {
+        // call函数只会检查是否执行了底层的EVM操作。因此，这种方式可能无法准确地检测函数是否按预期执行
         (bool success, ) = address(this).call(
             abi.encodeWithSignature("mint(uint256)", _num)
         );
