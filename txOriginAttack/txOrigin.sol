@@ -15,6 +15,7 @@ contract MyWallet {
 
     // tx.origin的值仍然是那个外部账户（即攻击者的账户），而不是Attack合约。
     // 这是因为tx.origin表示的是交易的原始发起者，即第一个（也是最终的）交易发起者
+    // dest表示Attack合约地址
     function transferTo(address payable dest, uint _mount) public {
         // 执行dest.call{value: _mount}("")语句前
         // tx.origin: 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 
